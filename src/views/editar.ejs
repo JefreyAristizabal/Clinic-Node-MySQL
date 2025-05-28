@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Editar Cita</title>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6 border border-1 rounded-2 shadow bg-light sm p-3 my-3">
+            <h2 class="text-center">Editar cita</h2>
+            <!-- Ruta que debe apuntar a la ruta de actualización en el servidor -->
+            <form action="/citas/editar/<%= cita.id %>" method="POST">
+                <!-- ID oculto para enviar al servidor -->
+                <input type="hidden" name="id" value="<%= cita.id %>">
+                
+                <div class="mb-2">
+                    <label for="paciente">Paciente</label>
+                    <input class="form-control" type="text" name="paciente" id="paciente" value="<%= cita.Paciente %>" required>
+                </div>
+                <div class="mb-2">
+                    <label for="fecha">Fecha de la cita</label>
+                    <input class="form-control" type="date" name="fecha" id="fecha" value="<%= cita.Fecha %>" required>
+                </div>
+                <div class="mb-2">
+                    <label for="hora">Hora de la cita</label>
+                    <input class="form-control" type="time" name="hora" id="hora" value="<%= cita.Hora %>" required>
+                </div>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Motivo</span>
+                    <textarea class="form-control" aria-label="Con texto" name="motivo" id="motivo"><%= cita.Motivo %></textarea>
+                </div>
+                <button class="btn btn-primary w-100">Actualizar</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
