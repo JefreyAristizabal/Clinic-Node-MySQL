@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Registrar Cita</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-6 border border-1 rounded-2 shadow bg-light sm p-3 my-3">
+                <h2 class="text-center">Registra una cita</h2>
+                <form action="/citas" method="POST">
+                    <div class="mb-2">
+                        <label for="paciente">Paciente</label>
+                        <input class="form-control" type="text" name="paciente" id="paciente" required>
+                    </div>
+                    <div class="mb-2">
+                        <label for="fecha">Fecha de la cita</label>
+                        <input class="form-control" type="date" name="fecha" id="fecha" required>
+                    </div>
+                    <div class="mb-2">
+                        <label for="hora">Hora de la cita</label>
+                        <input class="form-control" type="time" name="hora" id="hora" required>
+                    </div>
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">Motivo</span>
+                        <textarea class="form-control" aria-label="Con texto" name="motivo" id="motivo"></textarea>
+                    </div>
+                    <button class="btn btn-primary w-100">Guardar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <td>Paciente</td>
+                        <th>Fecha de la Cita</th>
+                        <th>Hora de la Cita</th>
+                        <th>Motivo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% citas.forEach(cita => { %>
+                        <tr>
+                            <td><%= cita.Paciente %></td>
+                            <td><%= cita.Fecha %></td>
+                            <td><%= cita.Hora %></td>
+                            <td><%= cita.Motivo %></td>
+                            <td>
+                                <a href="/citas/editar/<%= cita.id %>" class="btn btn-warning">Editar</a>
+                                <a class="btn btn-danger" href="#" onclick="confirmarEliminacion('<%= cita.id %>')">Eliminar</a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      function confirmarEliminacion(id) {
+        Swal.fire({
+          title: '¿Estás seguro?',
+          text: '¡Esta acción no se puede deshacer!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Realizar la solicitud GET para eliminar la cita
+            fetch(`/citas/eliminar/${id}`, { method: 'GET' })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  Swal.fire('¡Eliminado!', data.message, 'success')
+                    .then(() => location.reload()); // Recargar la página para actualizar la lista
+                } else {
+                  Swal.fire('Error', data.message, 'error');
+                }
+              })
+              .catch(error => {
+                console.error('Error al eliminar la cita:', error);
+                Swal.fire('Error', 'Hubo un problema al eliminar la cita.', 'error');
+              });
+          } else {
+            Swal.fire('Cancelado', 'La acción ha sido cancelada.', 'info');
+          }
+        });
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
